@@ -1,58 +1,58 @@
-DROP table if exists public."określenie" CASCADE;
-DROP table if exists public."język" CASCADE;
-DROP table if exists public."tłumaczenie" CASCADE;
+DROP table if exists public."notion" CASCADE;
+DROP table if exists public."langue" CASCADE;
+DROP table if exists public."traduction" CASCADE;
 
 
-create table if not exists "język"
+create table if not exists "langue"
 (
   id        serial    PRIMARY KEY  not null,
-  nazwa     varchar(255) not null,
-  kod_iso   varchar(2) not null
+  nom     varchar(255) not null,
+  code_iso   varchar(2) not null
 );
 
 
-create table if not exists "określenie"
+create table if not exists "notion"
 (
   id        serial    PRIMARY KEY  not null,
-  nazwa     varchar(255) not null,
-  definicja text,
-  język int NOT NULL references język(id)
-);
+  mot    varchar(255) not null,
+  définition text,
+  langue int NOT NULL references langue(id)
 
 
-create table if not exists "tłumaczenie"
+
+create table if not exists "traduction"
 (
     id serial PRIMARY KEY NOT NULL,
-    źródło int NOT NULL references określenie(id),
-    cel int NOT NULL references określenie(id),
-    unique(źródło, cel)
+    source int NOT NULL references notion(id),
+    cible int NOT NULL references notion(id),
+    unique(source, cible)
 );
 
 
-insert into język(id, nazwa, kod_iso) values (1, 'Polski', 'PL');
-insert into język(id, nazwa, kod_iso) values (2, 'Francuski', 'FR');
-insert into język(id, nazwa, kod_iso) values (3, 'Angielski', 'EN');
+insert into langue(id, nom, code_iso) values (1, 'Polski', 'PL');
+insert into langue(id, nom, code_iso) values (2, 'Francuski', 'FR');
+insert into langue(id, nom, code_iso) values (3, 'Angielski', 'EN');
 
-insert into określenie(nazwa, definicja, język) values('język', 'Język, jakim mówimy', 1);
-insert into określenie(nazwa, definicja, język) values('langue', 'La langue que nous parlons', 2);
-insert into określenie(nazwa, definicja, język) values('language', 'Language we speak', 3);
+insert into notion(mot, définition, langue) values('język', 'Język, jakim mówimy', 1);
+insert into notion(mot, définition, langue) values('langue', 'La langue que nous parlons', 2);
+insert into notion(mot, définition, langue) values('language', 'Language we speak', 3);
 
-insert into tłumaczenie(źródło, cel) values (1, 2);
-insert into tłumaczenie(źródło, cel) values (1, 3);
-insert into tłumaczenie(źródło, cel) values (2, 3);
-insert into tłumaczenie(źródło, cel) values (2, 1);
-insert into tłumaczenie(źródło, cel) values (3, 1);
-insert into tłumaczenie(źródło, cel) values (3, 2);
+insert into traduction(source, cible) values (1, 2);
+insert into traduction(source, cible) values (1, 3);
+insert into traduction(source, cible) values (2, 3);
+insert into traduction(source, cible) values (2, 1);
+insert into traduction(source, cible) values (3, 1);
+insert into traduction(source, cible) values (3, 2);
 
 
-DROP FUNCTION tłumacz(character varying,character varying);
-CREATE or REPLACE FUNCTION tłumacz(term varchar, lang  varchar)
+DROP FUNCTION traduis(character varying,character varying);
+CREATE or REPLACE FUNCTION traduis(term varchar, lang  varchar)
  RETURNS TABLE (
-  pojęcie varchar,
-  język_źródłowy_nazwa varchar,
-  tłumaczenie varchar,
-  tłumaczenie_definicja text,
-  język_docelowy_nazwa varchar )
+  notion varchar,
+  langue_source_nom varchar,
+  traduction varchar,
+  traduction_definicja text,
+  langue_cible_nom varchar )
   AS $func$
 BEGIN
 RETURN QUERY
