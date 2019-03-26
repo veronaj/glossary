@@ -56,27 +56,27 @@ CREATE or REPLACE FUNCTION traduis(term varchar, lang  varchar)
   AS $func$
 BEGIN
 RETURN QUERY
-  select o.nazwa as pojęcie,
-         jz.nazwa as język_źródłowy_nazwa,
-         ot.nazwa as tłumaczenie,
-         ot.definicja as definicja,
-         jd.nazwa as język_docelowy_nazwa
+  select n.mot as notion,
+         ls.nom as langue_source_nom,
+         n.nom as traduction,
+         n.définition as définition,
+         lc.nom as langue_cible_nom
     FROM
-      język jz,
-      język jd,
-      określenie o,
-      określenie ot,
-      tłumaczenie t
+      langue ls,
+      langue lc,
+      notion n,
+      notion nt,
+      traduction t
     WHERE
-      o.nazwa=term
+      n.nom=term
       and
-      jd.kod_iso=lang
+      lc.code_iso=langue
       and
-      t.cel = jd.id
+      t.cible = lc.id
       and
-      t.źródło = o.język
-      and jz.id = o.język
-      and ot.język = jd.id
+      t.source = n.langue
+      and ls.id = nom.langue
+      and nt.langue = lc.id
 ;
 
 END ; $func$
